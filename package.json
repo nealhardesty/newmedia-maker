@@ -1,0 +1,17 @@
+{
+  "name": "newmedia-maker",
+  "version": "0.0.1",
+  "dependencies": {
+    "lodash": "^3.10.1",
+    "mkdirp": "^0.5.1",
+    "supervisor": "^0.9.1"
+  },
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/supervisor/lib/cli-wrapper.js ./maker.js tee -a maker.log"
+  },
+  "engines": {
+    "node": ">=0.12"
+  },
+  "main": "maker.js"
+}
