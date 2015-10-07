@@ -12,7 +12,7 @@ var config = {
 	outputdir : fs.realpathSync("/Volumes/junkbin/mobilesync/newmedia"),
 	template: _.template("ffmpeg -i '<%=input%>' -b:a 64k -b:v 400k -acodec libfaac -vcodec mpeg4 -flags +aic+mv4 '<%=output%>'"),
 	matchregex : /\.avi$|\.mkv$|\.mp4$|\.m4v$/i,
-	timeout: 60
+	timeout: 10
 };
 
 var walk = function(dir) {
@@ -48,6 +48,27 @@ var convert = function(title, input, output) {
 	process.stdout.write("done.\n");
 }
 
+var pruneEmptyDirs = function(basedir) {
+	fs.readdirSync(basedir).forEach(function(entry) {
+		fullpath = path.join(basedir, entry);
+		var stat = fs.statSync(fullpath);
+		if(stat && stat.isDirectory()) {
+			pruneEmptyDirs(fullpath);
+			var deleted = true;
+			try {
+				// this will fail if not empty, but we want that :)
+				fs.rmdirSync(fullpath);
+			} catch(ex) {
+				//console.log(ex);
+				deleted = false;
+			}
+			if(deleted) {
+				console.log("pruned " + fullpath + " ... done.");
+			}
+		}
+	});
+}
+
 var doConvertAndDelete = function() {
 	var candidates = _.filter(walk(config.inputdir), function(item) {
 		return config.matchregex.test(item);
@@ -67,17 +88,36 @@ var doConvertAndDelete = function() {
 	});
 
 	//  --- deletion step
-	/*
-	var outputDeleteCandidates = walk(config.outputdir);
-	var outputDeleteBasenames = _.map(outputDeleteCandidates, function(filename) {
+	var outputDeleteBasenames = _.map(walk(config.outputdir), function(filename) {
 		return filename.slice(config.outputdir.length);
 	});
-	basenames.forEach(function(basename) {
-		var output=path.join(config.outputdir, basename).replace(config.matchregex, ".mp4");
-		var input=path.join(config.inputdir, basename);
+	// outputDeleteBasenames is everything in the output directory
+	outputDeleteBasenames.forEach(function(basename) {
+		// strip out the '.mp4$'
+		var inputWithoutExt=path.join(config.inputdir, basename).replace(/\....$/i, '');//.substring(0,-3);
+
+		var found=false;
+		candidates.forEach(function(candidateInputFilename) {
+			// not very efficient... but who cares...
+			var candidateInputFileWithoutExt = candidateInputFilename.replace(config.matchregex, '');
+	
+			//console.log("comparing " + inputWithoutExt + " with " + candidateInputFileWithoutExt);
+			if(inputWithoutExt === candidateInputFileWithoutExt) {
+				found=true;
+			}
+
+		});
+		if(!found) {
+				// output has a file that does not exist in the input
+				var outputFilename = path.join(config.outputdir, basename)
+				process.stdout.write("unlinking " + outputFilename + " ... ");
+				fs.unlinkSync(outputFilename);
+				process.stdout.write("done.\n");
+		}
 
 	});
-	*/
+
+	pruneEmptyDirs(config.outputdir);
 
 	setTimeout(doConvertAndDelete, config.timeout * 1000);
 }
