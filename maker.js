@@ -10,7 +10,8 @@ var execSync = require("child_process").execSync;
 var config = {
 	inputdir : fs.realpathSync("/Volumes/newmedia"),
 	outputdir : fs.realpathSync("/Volumes/junkbin/mobilesync/newmedia"),
-	template: _.template("ffmpeg -i '<%=input%>' -b:a 64k -b:v 500k -acodec libfaac -vcodec mpeg4 -flags +aic+mv4 '<%=output%>'"),
+	//template: _.template("ffmpeg -i '<%=input%>' -b:a 64k -b:v 500k -acodec libfaac -vcodec mpeg4 -flags +aic+mv4 '<%=output%>'"),
+	template: _.template("avconv -i '<%=input%>' -b:a 64k -b:v 500k -acodec aac -strict experimental -vcodec mpeg4 -flags +aic+mv4 '<%=output%>'"),
 	matchregex : /\.avi$|\.mkv$|\.mp4$|\.m4v$/i,
 	timeout: 10
 };
