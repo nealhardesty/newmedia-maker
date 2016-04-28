@@ -8,8 +8,10 @@ var execSync = require("child_process").execSync;
 
 // ffmpeg -i "$1" -acodec libfaac -b:a 96k -vcodec mpeg4 -b:v 200k -flags +aic+mv4 "$2"
 var config = {
-	inputdir : fs.realpathSync("/Volumes/newmedia"),
-	outputdir : fs.realpathSync("/Volumes/junkbin/mobilesync/newmedia"),
+	//inputdir : fs.realpathSync("/Volumes/newmedia/"),
+	//outputdir : fs.realpathSync("/Volumes/junkbin/mobilesync/newmedia/"),
+	inputdir : "/Volumes/newmedia/",
+	outputdir : "/Volumes/junkbin/mobilevideos/newmedia/",
 	//template: _.template("ffmpeg -i '<%=input%>' -b:a 64k -b:v 500k -acodec libfaac -vcodec mpeg4 -flags +aic+mv4 '<%=output%>'"),
 	template: _.template("ffmpeg -i '<%=input%>' -b:a 128k -b:v 1000k -acodec aac -strict -2 -vcodec mpeg4 -flags +aic+mv4 '<%=output%>'"),
 	//template: _.template("avconv -i '<%=input%>' -b:a 128k -b:v 1000k -acodec aac -strict experimental -vcodec mpeg4 -flags +aic+mv4 '<%=output%>'"),
