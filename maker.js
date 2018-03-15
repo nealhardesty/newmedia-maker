@@ -13,7 +13,7 @@ var config = {
 	inputdir : "/Volumes/newmedia/",
 	outputdir : "/Volumes/junkbin/mobilevideos/newmedia/",
 	//template: _.template("ffmpeg -i '<%=input%>' -b:a 64k -b:v 500k -acodec libfaac -vcodec mpeg4 -flags +aic+mv4 '<%=output%>'"),
-	template: _.template("ffmpeg -i '<%=input%>' -b:a 128k -b:v 1000k -acodec aac -strict -2 -vcodec mpeg4 -flags +aic+mv4 '<%=output%>'"),
+	template: _.template("ffmpeg -i '<%=input%>' -b:a 128k -b:v 750k -acodec aac -strict -2 -vcodec mpeg4 -flags +aic+mv4 '<%=output%>'"),
 	//template: _.template("avconv -i '<%=input%>' -b:a 128k -b:v 1000k -acodec aac -strict experimental -vcodec mpeg4 -flags +aic+mv4 '<%=output%>'"),
 	matchregex : /\.avi$|\.mkv$|\.mp4$|\.m4v$/i,
 	timeout: 10
